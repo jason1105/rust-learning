@@ -1,0 +1,9 @@
+**/*.swp
+**/target/
+**/*.rs.bk
+**/.DS_Store
+**/*.pdb
+rustlings/exercises/clippy/Cargo.toml
+rustlings/exercises/clippy/Cargo.lock
+**/.idea
+**/.vscode

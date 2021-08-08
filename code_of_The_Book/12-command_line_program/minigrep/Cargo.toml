@@ -1,0 +1,20 @@
+[package]
+name = "jason-minigrep"
+version = "0.1.1"
+authors = ["JasonLv lv-wei@foxmail.com"]
+edition = "2018"
+description = "一个用来检索文件内容的命令行工具."
+license = "MIT OR Apache-2.0"
+documentation = "https://github.com/jason1105/minigrep"
+homepage = "https://github.com/jason1105/minigrep"
+repository = "https://github.com/jason1105/minigrep.git"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+
+[profile.dev]
+opt-level = 0
+
+[profile.release]
+opt-level = 3
