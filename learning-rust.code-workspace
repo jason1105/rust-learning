@@ -7,6 +7,12 @@
 		{
 			"name": "code_of_The_Book",
 			"path": "code_of_The_Book"
+		},
+		{
+			"path": "grrs"
+		},
+		{
+			"path": "gitgit"
 		}
 	]
 }
