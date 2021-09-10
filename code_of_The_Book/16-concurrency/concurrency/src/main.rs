@@ -1,14 +1,11 @@
-use std::thread;
-use std::time::Duration;
+use std::rc::Rc;
 use std::sync::mpsc;
 use std::sync::{Arc, Mutex};
-use std::rc::Rc;
-
-
+use std::thread;
+use std::time::Duration;
 
 // Listing 16-1: Creating a new thread to print one thing while the main thread prints something else
 fn main() {
-
     // Listing 16-2: Saving a JoinHandle from thread::spawn to guarantee the thread is run to completion
     let handle = thread::spawn(|| {
         for i in 1..10 {
@@ -25,7 +22,6 @@ fn main() {
     handle.join().unwrap();
 
     let (tx, rx) = mpsc::channel();
-
 
     // Listing 16-10: Sending multiple messages and pausing between each
     let thread1 = thread::spawn(move || {
@@ -47,7 +43,6 @@ fn main() {
     }
 
     thread1.join().unwrap();
-    
     println!("--------------------");
 
     // Listing 16-11: Sending multiple messages from multiple producers
@@ -85,18 +80,16 @@ fn main() {
         println!("Got: {}", received);
     }
 
-    
     println!("--------------------");
-
 }
 
 #[cfg(test)]
 mod Test_Concurrency {
-    use std::thread;
     use std::rc::Rc;
     use std::sync::mpsc;
-    use std::time::Duration;
     use std::sync::{Arc, Mutex};
+    use std::thread;
+    use std::time::Duration;
 
     // Listing 16-3: Attempting to use a vector created by the main thread in another thread
     // Listing 16-4: A thread with a closure that attempts to capture a reference to v from a main thread that drops v
@@ -118,7 +111,6 @@ mod Test_Concurrency {
     #[test]
     fn test16_6() {
         let (tx, rx) = mpsc::channel();
-        
         thread::spawn(move || {
             let val = "hi".to_string();
             tx.send(val).unwrap();
@@ -128,7 +120,6 @@ mod Test_Concurrency {
         let received = rx.recv().unwrap();
         println!("Got: {}", received);
     }
-    
     //Listing 16-12: Exploring the API of Mutex<T> in a single-threaded context for simplicity
     #[test]
     fn test16_12() {
@@ -168,10 +159,8 @@ mod Test_Concurrency {
     // This method will cause deadlock
     #[test]
     fn test_deadlock() {
-
         let a = Arc::new(Mutex::new(1));
         let b = Arc::new(Mutex::new(1));
-    
         let a1 = Arc::clone(&a);
         let b1 = Arc::clone(&b);
         let thread_a = thread::spawn(move || {
@@ -181,8 +170,6 @@ mod Test_Concurrency {
             let mut bb = b1.lock().unwrap();
             println!("Thread A lock b.");
         });
-    
-    
         let a2 = Arc::clone(&a);
         let b2 = Arc::clone(&b);
         let thread_b = thread::spawn(move || {
@@ -192,7 +179,6 @@ mod Test_Concurrency {
             let mut aa = a2.lock().unwrap();
             println!("Thread B lock b.");
         });
-    
         thread_a.join().unwrap();
         thread_b.join().unwrap();
     }
