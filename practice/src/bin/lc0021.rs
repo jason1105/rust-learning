@@ -41,25 +41,29 @@ impl Solution {
         mut l2: Option<Box<ListNode>>,
     ) -> Option<Box<ListNode>> {
         let mut ans = Some(Box::new(ListNode::new(0)));
-        let mut anss = &mut ans;
+        let mut ans_p = &mut ans;
         loop {
-            match (l1.as_mut().take(), l2.as_mut()) {
-                (Some(a), Some(b)) => {
+            match (l1.take(), l2.take()) {
+                (Some(mut a), Some(mut b)) => {
+                    let ans_next;
                     if a.val < b.val {
-                        anss.as_mut().unwrap().next = l1.take();
-                        l1 = anss.as_mut().unwrap().next.as_mut().unwrap().next.take();
+                        l1 = a.next.take();
+                        l2 = Some(b);
+                        ans_next = Some(a);
                     } else {
-                        anss.as_mut().unwrap().next = l2.take();
-                        l2 = anss.as_mut().unwrap().next.as_mut().unwrap().next.take();
+                        l1 = Some(a);
+                        l2 = b.next.take();
+                        ans_next = Some(b);
                     }
-                    anss = &mut anss.as_mut().unwrap().next;
+                    ans_p.as_mut().unwrap().next = ans_next;
+                    ans_p = &mut ans_p.as_mut().unwrap().next;
                 }
                 (Some(a), None) => {
-                    anss.as_mut().unwrap().next = l1.take();
+                    ans_p.as_mut().unwrap().next = Some(a);
                     break;
                 }
                 (None, Some(b)) => {
-                    anss.as_mut().unwrap().next = l2.take();
+                    ans_p.as_mut().unwrap().next = Some(b);
                     break;
                 }
                 _ => {
