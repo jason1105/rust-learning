@@ -16,6 +16,9 @@
 		},
 		{
 			"path": "practice"
+		},
+		{
+			"path": "optimizing-advent-of-code"
 		}
 	]
 }
