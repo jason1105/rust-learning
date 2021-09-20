@@ -20,42 +20,40 @@ fn lc0125() {
 
 impl Solution {
     pub fn is_palindrome(s: String) -> bool {
-        let len = s.len();
+        let vec: Vec<char> = s.chars().filter(|c| c.is_ascii_alphanumeric()).collect();
+
+        let len = vec.len();
         if len == 0 || len == 1 {
             return true;
         }
 
-        let vec: Vec<char> = s.to_lowercase().chars().collect();
-
-        let (mut i, mut j) = (0, len - 1);
-
-        while i < j {
-            while i < len && !vec[i].is_ascii_alphanumeric() {
-                i += 1;
-            }
-            while !vec[j].is_ascii_alphanumeric() {
-                if j > 0 {
-                    j -= 1;
-                } else {
-                    break;
-                }
-            }
-            if i > j {
-                return true;
-            }
-
-            if i <= j && vec[i] == vec[j] {
-                i += 1;
-                if j > 0 {
-                    j -= 1;
-                } else {
-                    break;
-                }
-            } else {
+        for i in 0..len {
+            let j = len - i - 1;
+            if !vec[i].eq_ignore_ascii_case(&vec[j]) {
                 return false;
             }
         }
 
+        true
+    }
+    pub fn is_palindrome2(s: String) -> bool {
+        // native rust，但是，效率差不多
+        // let mut iter = s.chars().filter(|c| c.is_alphanumeric()).map(|c| c.to_ascii_lowercase());
+        // iter.clone().eq(iter.rev())
+
+        // 逐个识别字符串内容，保留数字和字符
+        let mut chars = s.chars().filter(|c| c.is_alphanumeric());
+
+        while let (Some(c1), Some(c2)) = (chars.next(), chars.next_back()) {
+            // 转换成小写后对比
+            // pub fn eq_ignore_ascii_case(&self, other: &char) -> bool {
+            //     self.to_ascii_lowercase() == other.to_ascii_lowercase()
+            // }
+            if !c1.eq_ignore_ascii_case(&c2) {
+                return false;
+            }
+            // 这里还可以优化, while 无需遍历整个字符串, 遍历一半即可
+        }
         true
     }
 }
