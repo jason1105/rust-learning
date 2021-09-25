@@ -3,6 +3,9 @@ name = "practice"
 version = "0.1.0"
 edition = "2018"
 
+[dependencies]
+futures-io = "0.3.17"
+
 [dev-dependencies]
 criterion = "0.3.3"
 
