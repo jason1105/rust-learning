@@ -7,3 +7,4 @@ rustlings/exercises/clippy/Cargo.toml
 rustlings/exercises/clippy/Cargo.lock
 **/.idea
 **/.vscode
+**/.history
