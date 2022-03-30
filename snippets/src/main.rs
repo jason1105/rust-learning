@@ -45,6 +45,7 @@ syntax_struct! (
     }
 );
 
+//
 pub fn main() {
     S::show();
     println!("");
