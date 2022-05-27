@@ -63,9 +63,9 @@ impl<T> Drop for List<T> {
     }
 }
 
-pub struct ListIterator<T>(List<T>);
+pub struct ListIntoIter<T>(List<T>);
 
-impl<T: Copy> Iterator for ListIterator<T> {
+impl<T: Copy> Iterator for ListIntoIter<T> {
     type Item = T;
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -76,10 +76,50 @@ impl<T: Copy> Iterator for ListIterator<T> {
 impl<T: Copy> IntoIterator for List<T> {
     type Item = T;
 
-    type IntoIter = ListIterator<T>;
+    type IntoIter = ListIntoIter<T>;
 
     fn into_iter(self) -> Self::IntoIter {
-        ListIterator(self)
+        ListIntoIter(self)
+    }
+}
+
+pub struct ListIter<'a, T>(Option<&'a Node<T>>);
+
+impl<'a, T: Copy> Iterator for ListIter<'a, T> {
+    type Item = &'a T;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.0.map(|node| {
+            self.0 = node.next.as_deref(); // Option<Box<Node<T>>> -> Option<&Node<T>>
+            &node.elem
+        })
+    }
+}
+
+impl<T: Copy> List<T> {
+    // lifetime bounds can be elide
+    fn iter<'a>(&'a self) -> ListIter<'a, T> {
+        ListIter(self.head.as_deref())
+    }
+}
+
+pub struct ListIterMut<'a, T>(Option<&'a mut Node<T>>);
+
+impl<'a, T: Copy> Iterator for ListIterMut<'a, T> {
+    type Item = &'a mut T;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.0.take().map(|node| {
+            self.0 = node.next.as_deref_mut();
+            &mut node.elem
+        })
+    }
+}
+
+impl<T: Copy> List<T> {
+    // lifetime bounds can be elide
+    pub fn iter_mut<'a>(&'a mut self) -> ListIterMut<'a, T> {
+        ListIterMut(self.head.as_deref_mut())
     }
 }
 
@@ -142,7 +182,7 @@ mod test {
     }
 
     #[test]
-    fn iter() {
+    fn into_iter() {
         let mut list = List::new();
 
         // Check empty list behaves right
@@ -157,6 +197,44 @@ mod test {
         assert_eq!(iter.next(), Some(3));
         assert_eq!(iter.next(), Some(2));
         assert_eq!(iter.next(), Some(1));
+        assert_eq!(iter.next(), None);
+    }
+
+    #[test]
+    fn iter() {
+        let mut list = List::new();
+
+        // Check empty list behaves right
+        assert_eq!(list.pop(), None);
+
+        // Populate list
+        list.push(1);
+        list.push(2);
+        list.push(3);
+
+        let mut iter = list.iter();
+        assert_eq!(iter.next(), Some(&3));
+        assert_eq!(iter.next(), Some(&2));
+        assert_eq!(iter.next(), Some(&1));
+        assert_eq!(iter.next(), None);
+    }
+
+    #[test]
+    fn iter_mut() {
+        let mut list = List::new();
+
+        // Check empty list behaves right
+        assert_eq!(list.pop(), None);
+
+        // Populate list
+        list.push(1);
+        list.push(2);
+        list.push(3);
+
+        let mut iter = list.iter_mut();
+        assert_eq!(iter.next(), Some(&mut 3));
+        assert_eq!(iter.next(), Some(&mut 2));
+        assert_eq!(iter.next(), Some(&mut 1));
         assert_eq!(iter.next(), None);
     }
 }
