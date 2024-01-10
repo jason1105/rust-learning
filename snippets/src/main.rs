@@ -122,7 +122,38 @@ fn main() {
            S1 { val: 111 }, S2 { val: Cell { value: 999 } }
         */
     }
+
+    pub fn first_palindrome(words: Vec<String>) -> String {
+        pub fn isPalindrome(s: &str) -> bool {
+            let s2 = s.chars().rev().collect::<String>();
+            s == s2
+        }
+
+        words
+            .into_iter()
+            .find(|x| *x == x.chars().rev().collect::<String>())
+            .unwrap_or(String::from(""))
+    }
+
+    {
+        /**
+         * "2222222" 这是一个 dst 类型的变量 str, 它在内存中的样子就是这样, 一个一个并排在一起, 没有长度信息.
+         *
+         *
+         */
+        let mut v = String::from("122223");
+        let rs = v.as_str();
+        // print!("{}", rs[0]);
+        let arr = [0; 2];
+        print!("{:?}", &(&arr)[..]);
+    }
 } // t1
+
+pub fn reverse_left_words(s: String, n: i32) -> String {
+    // let s: &str = s.as_ref();
+    let n = n as usize;
+    format!("{}{}", &s[0..n], &s[n..])
+}
 
 pub fn longest_common_prefix(strs: Vec<String>) -> String {
     let d: String = strs

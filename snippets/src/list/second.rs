@@ -63,6 +63,7 @@ impl<T> Drop for List<T> {
     }
 }
 
+/* 目标迭代器 */
 pub struct ListIntoIter<T>(List<T>);
 
 impl<T: Copy> Iterator for ListIntoIter<T> {
@@ -73,6 +74,7 @@ impl<T: Copy> Iterator for ListIntoIter<T> {
     }
 }
 
+/* 中间方法, 输出迭代器 */
 impl<T: Copy> IntoIterator for List<T> {
     type Item = T;
 

@@ -38,6 +38,19 @@ impl<T> List<T> {
     }
 }
 
+impl<T> Drop for List<T> {
+    fn drop(&mut self) {
+        let mut head = self.head.take();
+        while let Some(rc_node) = head {
+            if let Ok(mut node) = Rc::try_unwrap(rc_node) {
+                head = node.next.take();
+            } else {
+                break;
+            }
+        }
+    }
+}
+
 pub struct ListIter<'a, T>(Option<&'a Node<T>>);
 
 impl<'a, T: Copy> Iterator for ListIter<'a, T> {
